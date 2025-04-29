@@ -1,1 +1,1 @@
-# code-tei-core
+# CodeTEI
