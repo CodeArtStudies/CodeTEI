@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemaSpec xml:id="CodeTEI-v0.1"
+            xmlns="http://www.tei-c.org/ns/1.0"
+            xmlns:tei="http://www.tei-c.org/ns/1.0"
+            xmlns:code="http://codetei.org/ns/code"
+            xmlns:meta="http://codetei.org/ns/meta">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt><title>CodeTEI v0.1 ODD</title></titleStmt>
+      <publicationStmt><p>CC BY‑SA 4.0 — 2025</p></publicationStmt>
+      <sourceDesc><p>Auto‑generated from chat design.</p></sourceDesc>
+    </fileDesc>
+  </teiHeader>
+
+  <!-- Import TEI P5 core (all) -->
+  <schemaRef url="https://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng"/>
+
+  <!-- Add Code namespace modules via RNG file -->
+  <schemaRef url="../schema/CodeTEI-v0.1.rng"/>
+
+  <remarks>
+    <p>CodeTEI extends TEI P5 with <gi>code:block</gi>, <gi>code:line</gi> and a
+       <gi>meta</gi> family for annotations, execution logs, and statistics.
+       This ODD simply combines the full TEI schema with the independent RNG
+       fragment <code>CodeTEI-v0.1.rng</code>.</p>
+  </remarks>
+</schemaSpec>
