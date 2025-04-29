@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:id="demo-codeTEI-v05"
+     xmlns="http://www.tei-c.org/ns/1.0"
+     xmlns:code="http://codetei.org/ns/code"
+     xmlns:meta="http://codetei.org/ns/meta"
+     xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!--──────────────────────────────────────────────-->
+  <!-- 1. teiHeader                                 -->
+  <!--──────────────────────────────────────────────-->
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>Calling the Bell — CodeTEI v0.5 Demo</title>
+        <author xml:id="auth0">Zeroichi Arakawa</author>
+      </titleStmt>
+      <publicationStmt>
+        <p>Created 2025-04-29 for CodeTEI specification demonstration.</p>
+      </publicationStmt>
+      <sourceDesc><p>Born-digital sample.</p></sourceDesc>
+    </fileDesc>
+    <encodingDesc>
+      <schemaSpec ident="CodeTEI-v0.5"/>
+    </encodingDesc>
+    <revisionDesc>
+      <change who="#auth0" when="2025-04-29T12:00:00Z">initial commit</change>
+    </revisionDesc>
+  </teiHeader>
+
+  <!--──────────────────────────────────────────────-->
+  <!-- 2. Code text (line-first)                    -->
+  <!--──────────────────────────────────────────────-->
+  <text>
+    <body>
+      <code:block xml:id="func-callBell" type="function" lang="solidity">
+        <code:line xml:id="l1" n="1">function callBell() {</code:line>
+        <code:line xml:id="l2" n="2">  emit Ring();</code:line>
+        <code:line xml:id="l3" n="3">}</code:line>
+      </code:block>
+    </body>
+  </text>
+
+  <!--──────────────────────────────────────────────-->
+  <!-- 3. standOff — notes, runs, summary, tokens   -->
+  <!--──────────────────────────────────────────────-->
+  <standOff>
+
+    <!-- 3-1  AI & human notes -->
+    <meta:note xml:id="n-ai-42"
+               target="#l2"
+               agent="ai"
+               model="gpt-4o"
+               confidence="0.83"
+               when="2025-09-14T09:03:10Z">
+      <p>Line&nbsp;2 rings the bell only once, staging scarcity as ritual.</p>
+    </meta:note>
+
+    <meta:note xml:id="n-human-07"
+               target="#l2"
+               agent="human"
+               who="#visitor-A3F2"
+               when="2025-09-14T09:05:12Z">
+      <p>「一度きりの鐘」でチェーンに不可逆の詩的印を刻む。</p>
+    </meta:note>
+
+    <!-- 3-2  AI question & visitor answer -->
+    <meta:q xml:id="q17"
+            target="#l2"
+            agent="ai"
+            model="gpt-4o"
+            when="2025-09-14T09:06:00Z">
+      <p>Why avoid looping the bell?</p>
+    </meta:q>
+
+    <meta:a xml:id="a17-1"
+            for="#q17"
+            who="#visitor-B7"
+            when="2025-09-14T09:06:55Z">
+      <p>Repetition erodes meaning; one ring preserves a ceremonial aura.</p>
+    </meta:a>
+
+    <!-- 3-3  Blockchain run (type=tx) -->
+    <meta:run xml:id="run-tx-123"
+              type="tx"
+              target="#func-callBell"
+              timestamp="2025-09-14T09:03:12Z"
+              status="success"
+              chainID="137"
+              contractAddress="0xAbCDEF0123456789abcdef0123456789ABcDEF01"
+              txHash="0xDEADBEEFCAFEBABE..."
+              caller="0xFEEDFACE0000000000000000000000000FEEDFACE">
+      <meta:note agent="system">
+        <p>Gas&nbsp;16 412 — <code>Ring</code> event emitted.</p>
+      </meta:note>
+    </meta:run>
+
+    <!-- 3-4  Generic execution run (type=exec) -->
+    <meta:run xml:id="run-exec-58"
+              type="exec"
+              target="#func-callBell"
+              timestamp="2025-09-14T10:15:00Z"
+              status="error"
+              containerImage="ghcr.io/code-poem/runtime:2.0"
+              language="ruby"
+              version="3.3.0">
+      <meta:note agent="system">
+        <p>SyntaxError on line&nbsp;42 — unexpected <code>end</code>.</p>
+      </meta:note>
+    </meta:run>
+
+    <!-- 3-5  Run summary (optional) -->
+    <meta:runSummary xml:id="rs-total"
+                     target="#func-callBell"
+                     count="1 578"
+                     start="2025-09-14T00:00:00Z"
+                     end="2025-09-22T18:44:09Z"/>
+
+    <!-- 3-6  Optional token range -->
+    <meta:tokRange xml:id="t15"
+                   lineRef="#l2"
+                   start="2"
+                   end="6"
+                   tokType="keyword"/>
+
+  </standOff>
+
+  <!--──────────────────────────────────────────────-->
+  <!-- 4. Daily log fragments (example includes)    -->
+  <!--──────────────────────────────────────────────-->
+  <xi:include href="logs/run_tx_2025-09-15.xml" parse="xml"/>
+  <xi:include href="logs/run_exec_2025-09-15.xml" parse="xml"/>
+
+</TEI>
