@@ -4,9 +4,7 @@
      xmlns:code="http://codetei.org/ns/code"
      xmlns:meta="http://codetei.org/ns/meta">
 
-  <!--──────────────────────────────────────────────-->
-  <!-- 1. teiHeader                                 -->
-  <!--──────────────────────────────────────────────-->
+  <!-- teiHeader -->
   <teiHeader>
     <fileDesc>
       <titleStmt>
