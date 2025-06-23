@@ -11,9 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Jing
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y jing
-      - name: Validate XML files
-        run: bash ./tools/validate.sh
+      - name: Build schemas
+        run: bash tools/build-schema.sh
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: schemas
+          path: schema/build/CodeTEI-*
+      - name: Commit & push on main (only if tagged)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: add built schemas for ${{ github.ref_name }}"
+          file_pattern: schema/build/*

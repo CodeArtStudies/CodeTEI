@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>CodeTEI v0.2 ODD</title>
+        <author>CodeTEI Project</author>
+      </titleStmt>
+      <publicationStmt>
+        <p>CC BY‑SA 4.0 — 2025</p>
+      </publicationStmt>
+      <sourceDesc>
+        <p>ODD specification for CodeTEI extension to TEI P5</p>
+      </sourceDesc>
+    </fileDesc>
+    <encodingDesc>
+      <projectDesc>
+        <p>CodeTEI extends TEI P5 to support structured markup of source code with rich annotations including AI commentary, execution logs, and analytical metadata.</p>
+      </projectDesc>
+    </encodingDesc>
+  </teiHeader>
+  <text>
+    <body>
+      <div>
+        <head>CodeTEI Extension</head>
+        <p>This ODD defines extensions to TEI P5 for marking up source code with structured annotations.</p>
+        
+        <div>
+          <head>Rationale for Custom Elements</head>
+          <p>While TEI P5 provides <gi>code</gi> and <gi>ab</gi> elements for code representation, 
+             CodeTEI requires specialized semantics not adequately captured by existing elements:</p>
+          <list>
+            <item><gi>code:block</gi> vs <gi>code</gi>: Provides explicit typing (function, class) 
+                  and language specification with structured line containment</item>
+            <item><gi>code:line</gi> vs <gi>l</gi>: Designed for source code lines with numbering, 
+                  distinct from verse lines in literary texts</item>
+            <item><gi>meta:note</gi> vs <gi>note</gi>: Adds agent typing (ai/human/system), 
+                  confidence scoring, and model attribution for computational annotations</item>
+            <item><gi>meta:run</gi>: No TEI equivalent exists for execution records with 
+                  blockchain transaction hashes, runtime metadata, and status tracking</item>
+          </list>
+        </div>
+      </div>
+    </body>
+  </text>
+  
+  <schemaSpec ident="CodeTEI-v0.2" 
+              xmlns:code="http://codetei.org/ns/code"
+              xmlns:meta="http://codetei.org/ns/meta">
+    
+    <!-- Include minimal TEI P5 modules instead of tei_all -->
+    <moduleRef key="tei"/>
+    <moduleRef key="core"/>
+    <moduleRef key="header"/>
+    <moduleRef key="textstructure"/>
+    <moduleRef key="linking"/>
+    
+    <!-- Define custom elements using proper ODD syntax -->
+    <elementSpec ident="block" ns="http://codetei.org/ns/code" mode="add">
+      <desc>Container for a block of source code with explicit typing and language specification</desc>
+      <classes>
+        <memberOf key="model.pLike"/>
+      </classes>
+      <content>
+        <elementRef key="line" minOccurs="1" maxOccurs="unbounded"/>
+      </content>
+      <attList>
+        <attDef ident="type">
+          <desc>Type of code block (function, class, method, etc.)</desc>
+          <datatype><dataRef key="teidata.enumerated"/></datatype>
+        </attDef>
+        <attDef ident="lang">
+          <desc>Programming language identifier</desc>
+          <datatype><dataRef key="teidata.language"/></datatype>
+        </attDef>
+      </attList>
+      <remarks>
+        <p>Unlike TEI's generic <gi>code</gi> element, <gi>code:block</gi> provides 
+           structured containment of numbered lines with explicit semantic typing.</p>
+      </remarks>
+    </elementSpec>
+    
+    <elementSpec ident="line" ns="http://codetei.org/ns/code" mode="add">
+      <desc>A single line of source code with line numbering</desc>
+      <content>
+        <textNode/>
+      </content>
+      <attList>
+        <attDef ident="n">
+          <desc>Line number within the code block</desc>
+          <datatype><dataRef key="teidata.count"/></datatype>
+        </attDef>
+      </attList>
+      <remarks>
+        <p>Distinct from TEI's <gi>l</gi> element which is designed for verse lines 
+           in literary texts, not source code lines.</p>
+      </remarks>
+    </elementSpec>
+    
+    <elementSpec ident="note" ns="http://codetei.org/ns/meta" mode="add">
+      <desc>Annotation or commentary on code with agent attribution and confidence scoring</desc>
+      <classes>
+        <memberOf key="model.noteLike"/>
+      </classes>
+      <content>
+        <macroRef key="macro.specialPara"/>
+      </content>
+      <attList>
+        <attDef ident="agent">
+          <desc>Source of annotation</desc>
+          <datatype><dataRef key="teidata.enumerated"/></datatype>
+          <valList type="closed">
+            <valItem ident="ai"><desc>AI-generated annotation</desc></valItem>
+            <valItem ident="human"><desc>Human-authored annotation</desc></valItem>
+            <valItem ident="system"><desc>System-generated annotation</desc></valItem>
+          </valList>
+        </attDef>
+        <attDef ident="model">
+          <desc>AI model identifier for AI-generated annotations</desc>
+          <datatype><dataRef key="teidata.name"/></datatype>
+        </attDef>
+        <attDef ident="confidence">
+          <desc>Confidence score for AI annotations (0.0-1.0)</desc>
+          <datatype><dataRef key="teidata.probability"/></datatype>
+        </attDef>
+      </attList>
+      <remarks>
+        <p>Extends TEI's <gi>note</gi> with computational annotation metadata 
+           not present in standard TEI.</p>
+      </remarks>
+    </elementSpec>
+    
+    <elementSpec ident="run" ns="http://codetei.org/ns/meta" mode="add">
+      <desc>Record of code execution with runtime metadata</desc>
+      <content>
+        <elementRef key="note" minOccurs="0" maxOccurs="unbounded"/>
+      </content>
+      <attList>
+        <attDef ident="type">
+          <desc>Type of execution</desc>
+          <datatype><dataRef key="teidata.enumerated"/></datatype>
+          <valList type="closed">
+            <valItem ident="tx"><desc>Blockchain transaction</desc></valItem>
+            <valItem ident="exec"><desc>Local execution</desc></valItem>
+            <valItem ident="test"><desc>Test execution</desc></valItem>
+          </valList>
+        </attDef>
+        <attDef ident="status">
+          <desc>Execution status</desc>
+          <datatype><dataRef key="teidata.enumerated"/></datatype>
+          <valList type="closed">
+            <valItem ident="success"/>
+            <valItem ident="error"/>
+            <valItem ident="pending"/>
+          </valList>
+        </attDef>
+        <attDef ident="timestamp">
+          <desc>Execution timestamp in ISO 8601 format</desc>
+          <datatype><dataRef key="teidata.temporal.w3c"/></datatype>
+        </attDef>
+        <attDef ident="chainID" usage="opt">
+          <desc>Blockchain network identifier for transaction executions</desc>
+          <datatype><dataRef key="teidata.name"/></datatype>
+        </attDef>
+        <attDef ident="txHash" usage="opt">
+          <desc>Blockchain transaction hash</desc>
+          <datatype><dataRef key="teidata.name"/></datatype>
+        </attDef>
+      </attList>
+      <remarks>
+        <p>No equivalent exists in standard TEI for recording execution metadata, 
+           particularly blockchain transaction details and runtime information.</p>
+      </remarks>
+    </elementSpec>
+    
+    <elementSpec ident="q" ns="http://codetei.org/ns/meta" mode="add">
+      <desc>Question about code for interactive analysis</desc>
+      <classes>
+        <memberOf key="model.qLike"/>
+      </classes>
+      <content>
+        <macroRef key="macro.specialPara"/>
+      </content>
+      <attList>
+        <attDef ident="agent">
+          <desc>Agent that posed the question</desc>
+          <datatype><dataRef key="teidata.enumerated"/></datatype>
+          <valList type="closed">
+            <valItem ident="ai"/>
+            <valItem ident="human"/>
+          </valList>
+        </attDef>
+        <attDef ident="model" usage="opt">
+          <desc>AI model for AI-generated questions</desc>
+          <datatype><dataRef key="teidata.name"/></datatype>
+        </attDef>
+      </attList>
+    </elementSpec>
+    
+    <elementSpec ident="a" ns="http://codetei.org/ns/meta" mode="add">
+      <desc>Answer to a question about code</desc>
+      <content>
+        <macroRef key="macro.specialPara"/>
+      </content>
+      <attList>
+        <attDef ident="for">
+          <desc>Reference to the question being answered</desc>
+          <datatype><dataRef key="teidata.pointer"/></datatype>
+        </attDef>
+      </attList>
+    </elementSpec>
+    
+    <remarks>
+      <p>CodeTEI provides structured markup for source code with rich annotations. 
+         Custom elements are defined using proper TEI ODD methodology with explicit 
+         justification for extensions beyond standard TEI capabilities. This approach 
+         maintains compatibility with TEI processing tools while providing specialized 
+         semantics for computational code analysis and documentation.</p>
+    </remarks>
+    
+  </schemaSpec>
+</TEI>

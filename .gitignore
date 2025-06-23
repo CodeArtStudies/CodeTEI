@@ -1,0 +1,16 @@
+# Generated files
+demo.html
+*.tmp
+
+# Build artifacts directory
+schema/build/
+
+# macOS
+.DS_Store
+
+# Editor files
+.vscode/
+.idea/
+*~
+*.swp
+*.swo
