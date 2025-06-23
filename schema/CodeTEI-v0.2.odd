@@ -46,14 +46,15 @@
   
   <schemaSpec ident="CodeTEI-v0.2" 
               xmlns:code="http://codetei.org/ns/code"
-              xmlns:meta="http://codetei.org/ns/meta">
+              xmlns:meta="http://codetei.org/ns/meta"
+              source="tei:current">
     
-    <!-- Include minimal TEI P5 modules instead of tei_all -->
-    <moduleRef key="tei"/>
-    <moduleRef key="core"/>
-    <moduleRef key="header"/>
-    <moduleRef key="textstructure"/>
-    <moduleRef key="linking"/>
+    <!-- Include minimal TEI P5 modules as standalone -->
+    <moduleRef key="tei" source="tei:current"/>
+    <moduleRef key="core" source="tei:current"/>
+    <moduleRef key="header" source="tei:current"/>
+    <moduleRef key="textstructure" source="tei:current"/>
+    <moduleRef key="linking" source="tei:current"/>
     
     <!-- Define custom elements using proper ODD syntax -->
     <elementSpec ident="block" ns="http://codetei.org/ns/code" mode="add">

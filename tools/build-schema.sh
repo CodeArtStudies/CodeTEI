@@ -5,23 +5,38 @@ ODD="schema/CodeTEI-v0.2.odd"
 BUILD_DIR="schema/build"
 mkdir -p "${BUILD_DIR}"
 
-echo "Generating RNG schema from ODD specification..."
+echo "Generating RNG schema from ODD specification using TEI Stylesheets..."
 
-# Try Roma online service approach
-echo "📡 Attempting to use online Roma service..."
-if command -v curl >/dev/null 2>&1; then
-  if curl -s -f -F "upload=@$ODD" -F "docFormat=rng" \
-     https://roma.tei-c.org/Roma/CreateSchema > "$BUILD_DIR/CodeTEI-v0.2.rng" 2>/dev/null; then
-    echo "✅ Successfully generated RNG using online Roma service"
-  else
-    echo "❌ Online Roma service failed"
-  fi
+# Check prerequisites
+if ! command -v saxon >/dev/null 2>&1; then
+    echo "❌ Saxon XSLT processor not found. Install with: brew install saxon"
+    exit 1
 fi
 
-# Fallback: Create functional RNG based on ODD specification
-if [ ! -f "$BUILD_DIR/CodeTEI-v0.2.rng" ] || [ ! -s "$BUILD_DIR/CodeTEI-v0.2.rng" ]; then
-  echo "⚠️  Using fallback RNG generation..."
-  cat > "$BUILD_DIR/CodeTEI-v0.2.rng" << 'EOF'
+if [ ! -d "/tmp/tei-stylesheets" ]; then
+    echo "❌ TEI Stylesheets not found. Clone with:"
+    echo "   git clone https://github.com/TEIC/Stylesheets.git /tmp/tei-stylesheets"
+    exit 1
+fi
+
+# Generate RNG from ODD using Saxon + TEI Stylesheets
+echo "🎯 Converting ODD to RNG using Saxon..."
+if saxon "$ODD" /tmp/tei-stylesheets/odds/odd2relax.xsl > "$BUILD_DIR/CodeTEI-v0.2.rng"; then
+    if [ -s "$BUILD_DIR/CodeTEI-v0.2.rng" ]; then
+        echo "✅ Successfully generated RNG from ODD specification"
+    else
+        echo "❌ Generated RNG file is empty"
+        exit 1
+    fi
+else
+    echo "❌ Saxon transformation failed"
+    exit 1
+fi
+
+# Create functional fallback if generated RNG has external dependencies
+if grep -q "http://localhost" "$BUILD_DIR/CodeTEI-v0.2.rng"; then
+    echo "⚠️  Generated RNG has external dependencies, creating standalone version..."
+    cat > "$BUILD_DIR/CodeTEI-v0.2.rng" << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar xmlns="http://relaxng.org/ns/structure/1.0"
          datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
@@ -187,6 +202,7 @@ if [ ! -f "$BUILD_DIR/CodeTEI-v0.2.rng" ] || [ ! -s "$BUILD_DIR/CodeTEI-v0.2.rng
 
 </grammar>
 EOF
+    echo "   Created standalone RNG due to external dependencies"
 fi
 
 # Copy to schema root for validation
