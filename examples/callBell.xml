@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TEI xml:id="demo-codeTEI-v01"
+<TEI xml:id="demo-codeTEI-v02"
      xmlns="http://www.tei-c.org/ns/1.0"
      xmlns:code="http://codetei.org/ns/code"
      xmlns:meta="http://codetei.org/ns/meta">
@@ -8,7 +8,7 @@
   <teiHeader>
     <fileDesc>
       <titleStmt>
-        <title>Calling the Bell — CodeTEI v0.1 Demo</title>
+        <title>Calling the Bell — CodeTEI v0.2 Demo</title>
         <author xml:id="auth0">Zeroichi Arakawa</author>
       </titleStmt>
       <publicationStmt>
@@ -17,7 +17,7 @@
       <sourceDesc><p>Born-digital sample.</p></sourceDesc>
     </fileDesc>
     <encodingDesc>
-      <schemaSpec ident="CodeTEI-v0.5"/>
+      <schemaSpec ident="CodeTEI-v0.2"/>
     </encodingDesc>
     <revisionDesc>
       <change who="#auth0" when="2025-04-29T12:00:00Z">initial commit</change>

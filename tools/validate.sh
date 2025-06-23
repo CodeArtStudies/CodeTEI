@@ -2,7 +2,7 @@
 # Validate all CodeTEI XML files against the schema
 # Requires: jing (or rng-validator) in PATH
 
-SCHEMA="schema/CodeTEI-v0.1.rng"
+SCHEMA="schema/CodeTEI-v0.2.rng"
 EXAMPLES=$(find examples -name "*.xml")
 
 if ! command -v jing > /dev/null; then
