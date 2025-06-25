@@ -192,6 +192,12 @@ Schema generated from ODD source 2025-06-25T19:43:15Z. .
             </attribute>
          </optional>
          <optional>
+            <attribute name="contractAddress">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Contract address</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
             <attribute name="xml:id">
                <data type="ID"/>
             </attribute>
