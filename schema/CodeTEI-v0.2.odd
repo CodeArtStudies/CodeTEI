@@ -207,6 +207,10 @@
           <desc>Blockchain network ID (e.g., 1 for Ethereum mainnet)</desc>
           <datatype><dataRef name="integer"/></datatype>
         </attDef>
+        <attDef ident="contractAddress" usage="opt">
+          <desc>Contract address</desc>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
         <attDef ident="txID" usage="opt">
           <desc>Transaction ID</desc>
           <datatype><dataRef name="string"/></datatype>

@@ -51,7 +51,6 @@
     <meta:note xml:id="note-human-07"
                target="#l2"
                agent="human"
-               who="#visitor-A3F2"
                when="2025-09-14T09:05:12Z">
       <p>One-shot bell: an irreversible poetic stamp on-chain.</p>
     </meta:note>
@@ -78,13 +77,11 @@
               target="#func-callBell"
               timestamp="2025-09-14T09:03:12Z"
               status="success"
+              chainName="Polygon"
               chainID="137"
               contractAddress="0xAbCDEF0123456789abcdef0123456789ABcDEF01"
-              txHash="0xDEADBEEFCAFEBABE..."
-              caller="0xFEEDFACE0000000000000000000000000FEEDFACE">
-      <meta:note agent="system">
-        <p>Gas 16 412 — <code>Ring</code> event emitted.</p>
-      </meta:note>
+              txID="0xDEADBEEFCAFEBABE">
+      <p>Gas 16 412 — Ring event emitted.</p>
     </meta:run>
 
     <!-- Generic execution run -->
@@ -93,12 +90,8 @@
               target="#func-callBell"
               timestamp="2025-09-14T10:15:00Z"
               status="error"
-              containerImage="ghcr.io/code-poem/runtime:2.0"
-              language="ruby"
-              version="3.3.0">
-      <meta:note agent="system">
-        <p>SyntaxError on line 42 — unexpected <code>end</code>.</p>
-      </meta:note>
+              containerImage="ghcr.io/code-poem/runtime:2.0">
+      <p>SyntaxError on line 42 — unexpected end.</p>
     </meta:run>
 
     <!-- Run summary (optional) -->
@@ -107,12 +100,5 @@
                      count="1578"
                      start="2025-09-14T00:00:00Z"
                      end="2025-09-22T18:44:09Z"/>
-
-    <!-- Token range (optional) -->
-    <meta:tokRange xml:id="t42"
-                   startLine="#l2"  start="2"
-                   endLine="#l3"    end="1"
-                   tokType="identifier"/>
-
   </standOff>
 </TEI>
