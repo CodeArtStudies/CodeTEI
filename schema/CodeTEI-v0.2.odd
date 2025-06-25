@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TEI xmlns="http://www.tei-c.org/ns/1.0">
+<TEI xmlns="http://www.tei-c.org/ns/1.0"
+     xmlns:sch="http://purl.oclc.org/dsdl/schematron">
   <teiHeader>
     <fileDesc>
       <titleStmt>
@@ -26,6 +27,18 @@
         <p>This ODD defines extensions to TEI P5 for marking up source code with structured annotations.</p>
         
         <div>
+          <head>Stable Citation Scheme</head>
+          <p>CodeTEI implements a stable citation scheme for executable poetry:</p>
+          <list>
+            <item><code>codetei://sha3-256-&lt;digest&gt;#&lt;lineID&gt;</code> - Line-level citations</item>
+            <item><code>codetei://sha3-256-&lt;digest&gt;#&lt;blockID&gt;</code> - Block-level citations</item>
+            <item><code>codetei://sha3-256-&lt;digest&gt;#&lt;runID&gt;</code> - Execution-specific citations</item>
+          </list>
+          <p>This ensures persistent addressability for scholarly citation of 
+             executable poetry, independent of hosting platform changes.</p>
+        </div>
+        
+        <div>
           <head>Rationale for Custom Elements</head>
           <p>While TEI P5 provides <gi>code</gi> and <gi>ab</gi> elements for code representation, 
              CodeTEI requires specialized semantics not adequately captured by existing elements:</p>
@@ -43,36 +56,53 @@
       </div>
     </body>
   </text>
-  
+
   <schemaSpec ident="CodeTEI-v0.2" 
               xmlns:code="http://codetei.org/ns/code"
               xmlns:meta="http://codetei.org/ns/meta"
+              xmlns:sch="http://purl.oclc.org/dsdl/schematron"
               source="tei:current">
-    
+
     <!-- Include minimal TEI P5 modules as standalone -->
     <moduleRef key="tei" source="tei:current"/>
     <moduleRef key="core" source="tei:current"/>
     <moduleRef key="header" source="tei:current"/>
     <moduleRef key="textstructure" source="tei:current"/>
     <moduleRef key="linking" source="tei:current"/>
-    
+
     <!-- Define custom elements using proper ODD syntax -->
     <elementSpec ident="block" ns="http://codetei.org/ns/code" mode="add">
       <desc>Container for a block of source code with explicit typing and language specification</desc>
       <classes>
-        <memberOf key="model.pLike"/>
+        <memberOf key="model.divPart"/>
+        <memberOf key="att.global"/>
+        <memberOf key="att.typed"/>
       </classes>
       <content>
-        <elementRef key="line" minOccurs="1" maxOccurs="unbounded"/>
+        <alternate minOccurs="1" maxOccurs="unbounded">
+          <elementRef key="line"/>
+          <elementRef key="block"/>
+        </alternate>
       </content>
       <attList>
-        <attDef ident="type">
+        <attDef ident="type" mode="change">
           <desc>Type of code block (function, class, method, etc.)</desc>
-          <datatype><dataRef key="teidata.enumerated"/></datatype>
+          <datatype><dataRef name="string"/></datatype>
+          <valList type="open">
+            <valItem ident="function"><desc>Function definition</desc></valItem>
+            <valItem ident="class"><desc>Class definition</desc></valItem>
+            <valItem ident="method"><desc>Method definition</desc></valItem>
+            <valItem ident="module"><desc>Module or namespace</desc></valItem>
+            <valItem ident="snippet"><desc>Code snippet</desc></valItem>
+          </valList>
         </attDef>
-        <attDef ident="lang">
+        <attDef ident="lang" usage="req">
           <desc>Programming language identifier</desc>
-          <datatype><dataRef key="teidata.language"/></datatype>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
+        <attDef ident="name" usage="opt">
+          <desc>Name of the code entity (function name, class name, etc.)</desc>
+          <datatype><dataRef name="string"/></datatype>
         </attDef>
       </attList>
       <remarks>
@@ -80,7 +110,7 @@
            structured containment of numbered lines with explicit semantic typing.</p>
       </remarks>
     </elementSpec>
-    
+
     <elementSpec ident="line" ns="http://codetei.org/ns/code" mode="add">
       <desc>A single line of source code with line numbering</desc>
       <content>
@@ -97,7 +127,7 @@
            in literary texts, not source code lines.</p>
       </remarks>
     </elementSpec>
-    
+
     <elementSpec ident="note" ns="http://codetei.org/ns/meta" mode="add">
       <desc>Annotation or commentary on code with agent attribution and confidence scoring</desc>
       <classes>
@@ -130,87 +160,136 @@
            not present in standard TEI.</p>
       </remarks>
     </elementSpec>
-    
+
     <elementSpec ident="run" ns="http://codetei.org/ns/meta" mode="add">
       <desc>Record of code execution with runtime metadata</desc>
       <content>
         <elementRef key="note" minOccurs="0" maxOccurs="unbounded"/>
       </content>
       <attList>
-        <attDef ident="type">
-          <desc>Type of execution</desc>
-          <datatype><dataRef key="teidata.enumerated"/></datatype>
+        <attDef ident="type" usage="req">
+          <desc>Type of execution environment</desc>
+          <datatype><dataRef name="string"/></datatype>
           <valList type="closed">
-            <valItem ident="tx"><desc>Blockchain transaction</desc></valItem>
-            <valItem ident="exec"><desc>Local execution</desc></valItem>
-            <valItem ident="test"><desc>Test execution</desc></valItem>
+            <valItem ident="exec">
+              <desc>Traditional computing environment</desc>
+            </valItem>
+            <valItem ident="tx">
+              <desc>Blockchain transaction</desc>
+            </valItem>
           </valList>
         </attDef>
-        <attDef ident="status">
-          <desc>Execution status</desc>
-          <datatype><dataRef key="teidata.enumerated"/></datatype>
-          <valList type="closed">
-            <valItem ident="success"/>
-            <valItem ident="error"/>
-            <valItem ident="pending"/>
-          </valList>
-        </attDef>
-        <attDef ident="timestamp">
+        <attDef ident="timestamp" usage="req">
           <desc>Execution timestamp in ISO 8601 format</desc>
-          <datatype><dataRef key="teidata.temporal.w3c"/></datatype>
+          <datatype><dataRef name="dateTime"/></datatype>
+        </attDef>
+        <attDef ident="target" usage="req">
+          <desc>Reference to the code block being executed</desc>
+          <datatype><dataRef key="teidata.pointer"/></datatype>
+        </attDef>
+        
+        <!-- Traditional execution attributes -->
+        <attDef ident="containerImage" usage="opt">
+          <desc>Container image identifier (e.g., python:3.9-slim)</desc>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
+        <attDef ident="environment" usage="opt">
+          <desc>Execution environment identifier (e.g., AWS Lambda, Google Colab)</desc>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
+        
+        <!-- Blockchain execution attributes -->
+        <attDef ident="chainName" usage="opt">
+          <desc>Blockchain name (e.g., Ethereum, Polygon)</desc>
+          <datatype><dataRef name="string"/></datatype>
         </attDef>
         <attDef ident="chainID" usage="opt">
-          <desc>Blockchain network identifier for transaction executions</desc>
-          <datatype><dataRef key="teidata.name"/></datatype>
+          <desc>Blockchain network ID (e.g., 1 for Ethereum mainnet)</desc>
+          <datatype><dataRef name="integer"/></datatype>
         </attDef>
-        <attDef ident="txHash" usage="opt">
-          <desc>Blockchain transaction hash</desc>
-          <datatype><dataRef key="teidata.name"/></datatype>
+        <attDef ident="txID" usage="opt">
+          <desc>Transaction ID</desc>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
+        <attDef ident="blockNumber" usage="opt">
+          <desc>Block number containing the transaction</desc>
+          <datatype><dataRef name="integer"/></datatype>
+        </attDef>
+        <attDef ident="status" usage="req">
+          <desc>Execution status</desc>
+          <datatype><dataRef name="string"/></datatype>
+          <valList type="closed">
+            <valItem ident="success"><desc>Completed successfully</desc></valItem>
+            <valItem ident="error"><desc>Failed with error</desc></valItem>
+            <valItem ident="pending"><desc>In progress or queued</desc></valItem>
+          </valList>
         </attDef>
       </attList>
-      <remarks>
-        <p>No equivalent exists in standard TEI for recording execution metadata, 
-           particularly blockchain transaction details and runtime information.</p>
-      </remarks>
+      <constraintSpec ident="executionTypeConstraints" scheme="schematron">
+        <constraint>
+          <sch:rule context="meta:run[@type='tx']">
+            <sch:assert test="@txID">
+              Blockchain executions must have a transaction ID
+            </sch:assert>
+          </sch:rule>
+        </constraint>
+      </constraintSpec>
     </elementSpec>
-    
+
     <elementSpec ident="q" ns="http://codetei.org/ns/meta" mode="add">
       <desc>Question about code for interactive analysis</desc>
       <classes>
         <memberOf key="model.qLike"/>
+        <memberOf key="model.inter"/>
+        <memberOf key="att.global"/>
+        <memberOf key="att.pointing"/>
+        <memberOf key="att.datable"/>
       </classes>
       <content>
         <macroRef key="macro.specialPara"/>
       </content>
       <attList>
-        <attDef ident="agent">
+        <attDef ident="agent" usage="req">
           <desc>Agent that posed the question</desc>
-          <datatype><dataRef key="teidata.enumerated"/></datatype>
+          <datatype><dataRef name="string"/></datatype>
           <valList type="closed">
-            <valItem ident="ai"/>
-            <valItem ident="human"/>
+            <valItem ident="ai"><desc>AI-generated question</desc></valItem>
+            <valItem ident="human"><desc>Human-posed question</desc></valItem>
           </valList>
         </attDef>
         <attDef ident="model" usage="opt">
           <desc>AI model for AI-generated questions</desc>
-          <datatype><dataRef key="teidata.name"/></datatype>
+          <datatype><dataRef name="string"/></datatype>
         </attDef>
-      </attList>
-    </elementSpec>
-    
-    <elementSpec ident="a" ns="http://codetei.org/ns/meta" mode="add">
-      <desc>Answer to a question about code</desc>
-      <content>
-        <macroRef key="macro.specialPara"/>
-      </content>
-      <attList>
-        <attDef ident="for">
-          <desc>Reference to the question being answered</desc>
+        <attDef ident="target" usage="req">
+          <desc>Reference to code being questioned</desc>
           <datatype><dataRef key="teidata.pointer"/></datatype>
         </attDef>
       </attList>
     </elementSpec>
-    
+
+    <elementSpec ident="a" ns="http://codetei.org/ns/meta" mode="add">
+      <desc>Answer to a question about code</desc>
+      <classes>
+        <memberOf key="model.inter"/>
+        <memberOf key="att.global"/>
+        <memberOf key="att.datable"/>
+      </classes>
+      <content>
+        <macroRef key="macro.specialPara"/>
+      </content>
+      <attList>
+        <attDef ident="for" usage="req">
+          <desc>Reference to the question being answered</desc>
+          <datatype><dataRef key="teidata.pointer"/></datatype>
+        </attDef>
+        <attDef ident="who" usage="req">
+          <desc>Person or agent providing the answer</desc>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
+      </attList>
+    </elementSpec>
+
     <remarks>
       <p>CodeTEI provides structured markup for source code with rich annotations. 
          Custom elements are defined using proper TEI ODD methodology with explicit 
@@ -218,6 +297,6 @@
          maintains compatibility with TEI processing tools while providing specialized 
          semantics for computational code analysis and documentation.</p>
     </remarks>
-    
+
   </schemaSpec>
 </TEI>
