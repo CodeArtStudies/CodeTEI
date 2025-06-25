@@ -471,7 +471,7 @@ Schema generated from ODD source 2025-06-25T19:43:15Z. .
                <ref name="q"/>
                <ref name="a"/>
                <ref name="runSummary"/>
-               <ref name="tokRange"/>
+               <ref name="token"/>
             </choice>
          </zeroOrMore>
       </element>
@@ -515,13 +515,14 @@ Schema generated from ODD source 2025-06-25T19:43:15Z. .
       </element>
    </define>
    
-   <define name="tokRange">
-      <element name="tokRange" ns="http://codetei.org/ns/meta">
-         <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Token range annotation</a:documentation>
+   <define name="token">
+      <element name="token" ns="http://codetei.org/ns/meta">
+         <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Token annotation with position information</a:documentation>
          <zeroOrMore>
             <choice>
                <text/>
                <ref name="p"/>
+               <ref name="code"/>
             </choice>
          </zeroOrMore>
          <optional>
@@ -535,32 +536,32 @@ Schema generated from ODD source 2025-06-25T19:43:15Z. .
             </attribute>
          </optional>
          <optional>
-            <attribute name="count">
-               <data type="nonNegativeInteger"/>
-            </attribute>
-         </optional>
-         <optional>
-            <attribute name="start">
-               <data type="nonNegativeInteger"/>
-            </attribute>
-         </optional>
-         <optional>
-            <attribute name="end">
-               <data type="nonNegativeInteger"/>
-            </attribute>
-         </optional>
-         <optional>
             <attribute name="startLine">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Starting line identifier</a:documentation>
                <data type="string"/>
             </attribute>
          </optional>
          <optional>
             <attribute name="endLine">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Ending line identifier</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="start">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Starting token position</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="end">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Ending token position</a:documentation>
                <data type="string"/>
             </attribute>
          </optional>
          <optional>
             <attribute name="tokType">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Type of token range</a:documentation>
                <data type="string"/>
             </attribute>
          </optional>

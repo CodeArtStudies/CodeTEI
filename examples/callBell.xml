@@ -100,5 +100,16 @@
                      count="1578"
                      start="2025-09-14T00:00:00Z"
                      end="2025-09-22T18:44:09Z"/>
+
+    <!-- Token analysis -->
+    <meta:token xml:id="token-1"
+                target="#l2"
+                startLine="l2"
+                endLine="l2"
+                start="0"
+                end="15"
+                tokType="function_call">
+      <p>Token analysis: function call <code>bell()</code> spans characters 0-15.</p>
+    </meta:token>
   </standOff>
 </TEI>

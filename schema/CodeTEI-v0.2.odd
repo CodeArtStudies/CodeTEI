@@ -294,6 +294,40 @@
       </attList>
     </elementSpec>
 
+    <elementSpec ident="token" ns="http://codetei.org/ns/meta" mode="add">
+      <desc>Token annotation with position information</desc>
+      <classes>
+        <memberOf key="model.inter"/>
+        <memberOf key="att.global"/>
+        <memberOf key="att.pointing"/>
+      </classes>
+      <content>
+        <macroRef key="macro.specialPara"/>
+      </content>
+      <attList>
+        <attDef ident="startLine" usage="opt">
+          <desc>Starting line identifier</desc>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
+        <attDef ident="endLine" usage="opt">
+          <desc>Ending line identifier</desc>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
+        <attDef ident="start" usage="opt">
+          <desc>Starting token position</desc>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
+        <attDef ident="end" usage="opt">
+          <desc>Ending token position</desc>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
+        <attDef ident="tokType" usage="opt">
+          <desc>Type of token range</desc>
+          <datatype><dataRef name="string"/></datatype>
+        </attDef>
+      </attList>
+    </elementSpec>
+
     <remarks>
       <p>CodeTEI provides structured markup for source code with rich annotations. 
          Custom elements are defined using proper TEI ODD methodology with explicit 
