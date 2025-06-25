@@ -164,7 +164,7 @@
     <elementSpec ident="run" ns="http://codetei.org/ns/meta" mode="add">
       <desc>Record of code execution with runtime metadata</desc>
       <content>
-        <elementRef key="note" minOccurs="0" maxOccurs="unbounded"/>
+        <macroRef key="macro.specialPara"/>
       </content>
       <attList>
         <attDef ident="type" usage="req">

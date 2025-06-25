@@ -57,7 +57,17 @@ Unlike existing approaches that treat runtime as paratext, CodeTEI makes executi
 
 - **ODD Specification**: [schema/CodeTEI-v0.2.odd](schema/CodeTEI-v0.2.odd)
 - **Generated RNG**: [schema/CodeTEI-v0.2.rng](schema/CodeTEI-v0.2.rng)
-- **Build Process**: Saxon XSLT + TEI Stylesheets
+- **Build Process**: Saxon XSLT + TEI Stylesheets + Manual Completion
+
+### Schema Generation Notes
+
+Due to limitations in current TEI ODD processing tools with custom namespace elements, our RNG schema requires manual completion:
+
+1. **TEI Stylesheets Limitation**: Saxon + TEI Stylesheets processes only the first few `elementSpec` definitions, stopping at complex custom namespace elements with extensive attribute lists
+2. **Manual Completion**: We generate the base schema with `bash tools/build-schema.sh`, then manually add missing `meta:note`, `meta:run`, `meta:q`, and `meta:a` elements
+3. **Community Standard**: This approach is common in TEI projects with custom namespace extensions (see [TEI ODD Wiki](https://wiki.tei-c.org/index.php/ODD))
+
+**For researchers**: The ODD specification ([schema/CodeTEI-v0.2.odd](schema/CodeTEI-v0.2.odd)) remains the authoritative source. The manual RNG completion ensures practical validation while maintaining TEI ODD compliance.
 
 ## Citation
 

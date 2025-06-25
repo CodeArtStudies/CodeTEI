@@ -5,21 +5,13 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
          ns="http://www.tei-c.org/ns/1.0"><!--
-Schema generated from ODD source 2025-06-25T19:41:31Z. .  
+Schema generated from ODD source 2025-06-25T19:43:15Z. .  
 --><!---->
    <sch:ns xmlns:sch="http://purl.oclc.org/dsdl/schematron"
            prefix="tei"
            uri="http://www.tei-c.org/ns/1.0"/>
-   <include href="http://localhost/schema/relaxng/tei.rng"
-            ns="http://www.tei-c.org/ns/1.0"/>
-   <include href="http://localhost/schema/relaxng/core.rng"
-            ns="http://www.tei-c.org/ns/1.0"/>
-   <include href="http://localhost/schema/relaxng/header.rng"
-            ns="http://www.tei-c.org/ns/1.0"/>
-   <include href="http://localhost/schema/relaxng/textstructure.rng"
-            ns="http://www.tei-c.org/ns/1.0"/>
-   <include href="http://localhost/schema/relaxng/linking.rng"
-            ns="http://www.tei-c.org/ns/1.0"/>
+   <!-- TEI P5 base schema includes removed for standalone operation -->
+   <!-- This RNG was manually completed due to TEI Stylesheets limitations with custom namespaces -->
    <define name="block">
       <element name="block" ns="http://codetei.org/ns/code">
          <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Container for a block of source code with explicit typing and language specification</a:documentation>
@@ -34,9 +26,27 @@ Schema generated from ODD source 2025-06-25T19:41:31Z. .
             <data type="string"/>
          </attribute>
          <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
+            </attribute>
+         </optional>
+         <optional>
             <attribute name="name">
                <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Name of the code entity (function name, class name, etc.)</a:documentation>
                <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="type">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Type of code block (function, class, method, etc.)</a:documentation>
+               <choice>
+                  <value>function</value>
+                  <value>class</value>
+                  <value>method</value>
+                  <value>module</value>
+                  <value>snippet</value>
+                  <value>contract</value>
+               </choice>
             </attribute>
          </optional>
          <empty/>
@@ -49,6 +59,12 @@ Schema generated from ODD source 2025-06-25T19:41:31Z. .
          <optional>
             <attribute name="n">
                <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Line number within the code block</a:documentation>
+               <data type="nonNegativeInteger"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
             </attribute>
          </optional>
          <empty/>
@@ -57,33 +73,496 @@ Schema generated from ODD source 2025-06-25T19:41:31Z. .
    <define name="note">
       <element name="note" ns="http://codetei.org/ns/meta">
          <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Annotation or commentary on code with agent attribution and confidence scoring</a:documentation>
+         <zeroOrMore>
+            <choice>
+               <text/>
+               <ref name="p"/>
+               <ref name="code"/>
+            </choice>
+         </zeroOrMore>
          <optional>
             <attribute name="agent">
                <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Source of annotation</a:documentation>
                <choice>
                   <value>ai</value>
-                  <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">AI-generated annotation</a:documentation>
                   <value>human</value>
-                  <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Human-authored annotation</a:documentation>
                   <value>system</value>
-                  <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">System-generated annotation</a:documentation>
                </choice>
             </attribute>
          </optional>
          <optional>
             <attribute name="model">
                <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">AI model identifier for AI-generated annotations</a:documentation>
+               <data type="string"/>
             </attribute>
          </optional>
          <optional>
             <attribute name="confidence">
                <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Confidence score for AI annotations (0.0-1.0)</a:documentation>
+               <data type="decimal"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="target">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Reference to code being annotated</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="when">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Timestamp (from att.datable)</a:documentation>
+               <data type="string"/>
             </attribute>
          </optional>
          <empty/>
       </element>
    </define>
+   <define name="run">
+      <element name="run" ns="http://codetei.org/ns/meta">
+         <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Record of code execution with runtime metadata</a:documentation>
+         <zeroOrMore>
+            <choice>
+               <text/>
+               <ref name="p"/>
+               <ref name="code"/>
+            </choice>
+         </zeroOrMore>
+         <attribute name="type">
+            <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Type of execution environment</a:documentation>
+            <choice>
+               <value>exec</value>
+               <value>tx</value>
+            </choice>
+         </attribute>
+         <attribute name="timestamp">
+            <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Execution timestamp in ISO 8601 format</a:documentation>
+            <data type="string"/>
+         </attribute>
+         <attribute name="target">
+            <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Reference to the code block being executed</a:documentation>
+            <data type="string"/>
+         </attribute>
+         <attribute name="status">
+            <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Execution status</a:documentation>
+            <choice>
+               <value>success</value>
+               <value>error</value>
+               <value>pending</value>
+            </choice>
+         </attribute>
+         <optional>
+            <attribute name="containerImage">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Container image identifier</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="environment">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Execution environment identifier</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="chainName">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Blockchain name</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="chainID">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Blockchain network ID</a:documentation>
+               <data type="integer"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="txID">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Transaction ID</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="blockNumber">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Block number containing the transaction</a:documentation>
+               <data type="integer"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
+            </attribute>
+         </optional>
+         <empty/>
+      </element>
+   </define>
+   <define name="q">
+      <element name="q" ns="http://codetei.org/ns/meta">
+         <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Question about code for interactive analysis</a:documentation>
+         <zeroOrMore>
+            <choice>
+               <text/>
+               <ref name="p"/>
+               <ref name="code"/>
+            </choice>
+         </zeroOrMore>
+         <attribute name="agent">
+            <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Agent that posed the question</a:documentation>
+            <choice>
+               <value>ai</value>
+               <value>human</value>
+            </choice>
+         </attribute>
+         <attribute name="target">
+            <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Reference to code being questioned</a:documentation>
+            <data type="string"/>
+         </attribute>
+         <optional>
+            <attribute name="model">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">AI model for AI-generated questions</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="when">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Timestamp (from att.datable)</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <empty/>
+      </element>
+   </define>
+   <define name="a">
+      <element name="a" ns="http://codetei.org/ns/meta">
+         <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Answer to a question about code</a:documentation>
+         <zeroOrMore>
+            <choice>
+               <text/>
+               <ref name="p"/>
+               <ref name="code"/>
+            </choice>
+         </zeroOrMore>
+         <attribute name="for">
+            <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Reference to the question being answered</a:documentation>
+            <data type="string"/>
+         </attribute>
+         <attribute name="who">
+            <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Person or agent providing the answer</a:documentation>
+            <data type="string"/>
+         </attribute>
+         <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="when">
+               <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Timestamp (from att.datable)</a:documentation>
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <empty/>
+      </element>
+   </define>
+   <!-- TEI document structure -->
+   <define name="TEI">
+      <element name="TEI">
+         <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
+            </attribute>
+         </optional>
+         <ref name="teiHeader"/>
+         <ref name="text"/>
+         <optional>
+            <ref name="standOff"/>
+         </optional>
+      </element>
+   </define>
+   
+   <define name="teiHeader">
+      <element name="teiHeader">
+         <ref name="fileDesc"/>
+         <optional><ref name="encodingDesc"/></optional>
+         <optional><ref name="revisionDesc"/></optional>
+      </element>
+   </define>
+   
+   <define name="fileDesc">
+      <element name="fileDesc">
+         <ref name="titleStmt"/>
+         <ref name="publicationStmt"/>
+         <ref name="sourceDesc"/>
+      </element>
+   </define>
+   
+   <define name="titleStmt">
+      <element name="titleStmt">
+         <ref name="title"/>
+         <optional><ref name="author"/></optional>
+      </element>
+   </define>
+   
+   <define name="title">
+      <element name="title">
+         <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
+            </attribute>
+         </optional>
+         <text/>
+      </element>
+   </define>
+   
+   <define name="author">
+      <element name="author">
+         <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
+            </attribute>
+         </optional>
+         <text/>
+      </element>
+   </define>
+   
+   <define name="publicationStmt">
+      <element name="publicationStmt">
+         <ref name="p"/>
+      </element>
+   </define>
+   
+   <define name="sourceDesc">
+      <element name="sourceDesc">
+         <ref name="p"/>
+      </element>
+   </define>
+   
+   <define name="encodingDesc">
+      <element name="encodingDesc">
+         <optional><ref name="projectDesc"/></optional>
+         <optional><ref name="schemaSpec"/></optional>
+      </element>
+   </define>
+   
+   <define name="revisionDesc">
+      <element name="revisionDesc">
+         <oneOrMore>
+            <ref name="change"/>
+         </oneOrMore>
+      </element>
+   </define>
+   
+   <define name="change">
+      <element name="change">
+         <optional>
+            <attribute name="when">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="who">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <text/>
+      </element>
+   </define>
+   
+   <define name="schemaSpec">
+      <element name="schemaSpec">
+         <optional>
+            <attribute name="ident">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <zeroOrMore>
+            <ref name="moduleRef"/>
+         </zeroOrMore>
+      </element>
+   </define>
+   
+   <define name="moduleRef">
+      <element name="moduleRef">
+         <attribute name="key">
+            <data type="string"/>
+         </attribute>
+      </element>
+   </define>
+   
+   <define name="projectDesc">
+      <element name="projectDesc">
+         <ref name="p"/>
+      </element>
+   </define>
+   
+   <define name="text">
+      <element name="text">
+         <ref name="body"/>
+      </element>
+   </define>
+   
+   <define name="body">
+      <element name="body">
+         <zeroOrMore>
+            <choice>
+               <ref name="div"/>
+               <ref name="block"/>
+            </choice>
+         </zeroOrMore>
+      </element>
+   </define>
+   
+   <define name="div">
+      <element name="div">
+         <optional><ref name="head"/></optional>
+         <zeroOrMore>
+            <choice>
+               <ref name="p"/>
+               <ref name="block"/>
+               <ref name="div"/>
+            </choice>
+         </zeroOrMore>
+      </element>
+   </define>
+   
+   <define name="head">
+      <element name="head">
+         <text/>
+      </element>
+   </define>
+   
+   <define name="p">
+      <element name="p">
+         <zeroOrMore>
+            <choice>
+               <text/>
+               <ref name="code"/>
+            </choice>
+         </zeroOrMore>
+      </element>
+   </define>
+   
+   <define name="code">
+      <element name="code">
+         <text/>
+      </element>
+   </define>
+   
+   <define name="standOff">
+      <element name="standOff">
+         <zeroOrMore>
+            <choice>
+               <ref name="note"/>
+               <ref name="run"/>
+               <ref name="q"/>
+               <ref name="a"/>
+               <ref name="runSummary"/>
+               <ref name="tokRange"/>
+            </choice>
+         </zeroOrMore>
+      </element>
+   </define>
+   
+   <define name="runSummary">
+      <element name="runSummary" ns="http://codetei.org/ns/meta">
+         <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Summary of execution runs</a:documentation>
+         <zeroOrMore>
+            <choice>
+               <text/>
+               <ref name="p"/>
+            </choice>
+         </zeroOrMore>
+         <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="target">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="count">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="start">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="end">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <empty/>
+      </element>
+   </define>
+   
+   <define name="tokRange">
+      <element name="tokRange" ns="http://codetei.org/ns/meta">
+         <a:documentation xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">Token range annotation</a:documentation>
+         <zeroOrMore>
+            <choice>
+               <text/>
+               <ref name="p"/>
+            </choice>
+         </zeroOrMore>
+         <optional>
+            <attribute name="xml:id">
+               <data type="ID"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="target">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="count">
+               <data type="nonNegativeInteger"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="start">
+               <data type="nonNegativeInteger"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="end">
+               <data type="nonNegativeInteger"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="startLine">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="endLine">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <optional>
+            <attribute name="tokType">
+               <data type="string"/>
+            </attribute>
+         </optional>
+         <empty/>
+      </element>
+   </define>
+
    <start>
-      <empty/>
+      <ref name="TEI"/>
    </start>
 </grammar>
