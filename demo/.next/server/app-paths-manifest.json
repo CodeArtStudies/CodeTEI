@@ -1,0 +1,9 @@
+{
+  "/api/executions/[id]/route": "app/api/executions/[id]/route.js",
+  "/api/code-works/[hash]/route": "app/api/code-works/[hash]/route.js",
+  "/api/code-works/route": "app/api/code-works/route.js",
+  "/work/[hash]/page": "app/work/[hash]/page.js",
+  "/browse/page": "app/browse/page.js",
+  "/page": "app/page.js",
+  "/register/page": "app/register/page.js"
+}

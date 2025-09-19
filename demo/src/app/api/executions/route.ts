@@ -1,0 +1,46 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { z } from 'zod'
+
+const createExecutionSchema = z.object({
+  type: z.enum(['container', 'blockchain']),
+  containerInfo: z.string().optional(),
+  chainName: z.string().optional(),
+  txId: z.string().optional(),
+  status: z.enum(['success', 'failure']),
+  notes: z.string().optional(),
+  executedAt: z.string().datetime().optional(),
+  codeWorkId: z.string(),
+})
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const validatedData = createExecutionSchema.parse(body)
+
+    const executionData = {
+      ...validatedData,
+      executedAt: validatedData.executedAt ? new Date(validatedData.executedAt) : new Date(),
+    }
+
+    const execution = await prisma.execution.create({
+      data: executionData,
+    })
+
+    return NextResponse.json(execution, { status: 201 })
+  } catch (error) {
+    console.error('Error creating execution:', error)
+    
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid input data', details: error.errors },
+        { status: 400 }
+      )
+    }
+
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
