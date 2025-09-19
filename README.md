@@ -1,5 +1,7 @@
 # CodeTEI: A TEI Extension for Executable Poetry
 
+> 🌐 **Live Demo**: [https://code-tei-corpus.vercel.app/](https://code-tei-corpus.vercel.app/)
+
 CodeTEI extends TEI P5 to preserve, cite, and analyze **executable poetry** — works where source code itself constitutes the poem, and execution forms part of the meaning.
 
 ## Background
@@ -18,6 +20,8 @@ Digital humanities increasingly engages with multimodal artifacts. Executable po
 - **Stable citations**: Cryptographic hashes ensure persistent addressability
 
 ## Quick Start
+
+> 💡 **Try it now**: Visit the [live demo](https://code-tei-corpus.vercel.app/) to register and explore code poetry works with AI explanations.
 
 ```bash
 # Install dependencies
