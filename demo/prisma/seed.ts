@@ -6,9 +6,19 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Starting database seeding...')
 
-  // 空のデータベースで開始（サンプルデータなし）
-  console.log('✅ Database is ready for use')
-  console.log('🎉 Database seeding completed!')
+  // 既存のデータをすべて削除
+  console.log('🗑️ Clearing all existing data...')
+  
+  await prisma.execution.deleteMany({})
+  console.log('✅ Deleted all executions')
+  
+  await prisma.explanation.deleteMany({})
+  console.log('✅ Deleted all explanations')
+  
+  await prisma.codeWork.deleteMany({})
+  console.log('✅ Deleted all code works')
+
+  console.log('🎉 Database completely cleared!')
 }
 
 main()
