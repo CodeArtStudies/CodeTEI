@@ -39,8 +39,6 @@ open demo.html
 
 ## Examples
 
-- **[recursivePoem.xml](examples/recursivePoem.xml)** - Python executable poetry with AI literary analysis
-- **[onchainHaiku.xml](examples/onchainHaiku.xml)** - Solidity blockchain poetry with transaction history
 - **[callBell.xml](examples/callBell.xml)** - Basic syntax demonstration
 
 ## Research Context
