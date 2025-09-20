@@ -60,7 +60,7 @@ model Execution {
   txId        String?
   
   // Common fields
-  status      String   // "success" or "failure"
+  status      String   // "success", "failed", or "pending"
   notes       String?
   executedAt  DateTime @default(now())
   

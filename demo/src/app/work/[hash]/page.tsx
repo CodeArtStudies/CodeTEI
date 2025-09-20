@@ -219,7 +219,9 @@ export default function WorkDetailPage({ params }: { params: Promise<{ hash: str
         const resolvedParams = await params
         await fetchWork(resolvedParams.hash) // Refresh to show updated executions
       } else {
-        throw new Error('Failed to add execution')
+        const errorData = await response.json()
+        console.error('API Error:', errorData)
+        throw new Error(`Failed to add execution: ${errorData.error || 'Unknown error'}`)
       }
     } catch (error) {
       console.error('Error adding execution:', error)
