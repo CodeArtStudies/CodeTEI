@@ -51,6 +51,8 @@ export async function GET() {
         createdAt: 'desc',
       },
       include: {
+        explanations: true,
+        executions: true,
         _count: {
           select: {
             explanations: true,

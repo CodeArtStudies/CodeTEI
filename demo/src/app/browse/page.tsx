@@ -1,7 +1,31 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { generateCodeTEIURI } from '@/lib/codetei'
+import { generateCodeTEIURI, generateCompleteCodeTEIXML } from '@/lib/codetei'
+
+interface Explanation {
+  id: string
+  type: string
+  lineNumber?: number
+  content: string
+  agent: string
+  model?: string
+  confidence?: number
+  understanding?: number
+  question?: string
+  createdAt: string
+}
+
+interface Execution {
+  id: string
+  type: string
+  containerInfo?: string
+  chainName?: string
+  txId?: string
+  status: string
+  notes?: string
+  executedAt: string
+}
 
 interface CodeWork {
   id: string
@@ -10,6 +34,8 @@ interface CodeWork {
   sourceCode: string
   sha3Hash: string
   codeteiXml: string
+  explanations?: Explanation[]
+  executions?: Execution[]
   createdAt: string
   _count: {
     explanations: number
@@ -40,7 +66,19 @@ export default function BrowsePage() {
   }
 
   const viewXML = (work: CodeWork) => {
-    const blob = new Blob([work.codeteiXml], { type: 'application/xml' })
+    // Generate complete CodeTEI XML with all annotations
+    const completeXML = generateCompleteCodeTEIXML({
+      id: work.id,
+      title: work.title,
+      author: work.author,
+      sourceCode: work.sourceCode,
+      language: 'text',
+      sha3Hash: work.sha3Hash,
+      explanations: work.explanations || [],
+      executions: work.executions || []
+    })
+    
+    const blob = new Blob([completeXML], { type: 'application/xml' })
     const url = URL.createObjectURL(blob)
     window.open(url, '_blank')
     URL.revokeObjectURL(url)

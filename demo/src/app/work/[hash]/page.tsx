@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { generateCodeTEIURI } from '@/lib/codetei'
+import { generateCodeTEIURI, generateCompleteCodeTEIXML } from '@/lib/codetei'
 
 interface Explanation {
   id: string
@@ -255,7 +255,19 @@ export default function WorkDetailPage({ params }: { params: Promise<{ hash: str
   const downloadXML = () => {
     if (!work) return
     
-    const blob = new Blob([work.codeteiXml], { type: 'application/xml' })
+    // Generate complete CodeTEI XML with all annotations
+    const completeXML = generateCompleteCodeTEIXML({
+      id: work.id,
+      title: work.title,
+      author: work.author,
+      sourceCode: work.sourceCode,
+      language: 'text',
+      sha3Hash: work.sha3Hash,
+      explanations: work.explanations,
+      executions: work.executions
+    })
+    
+    const blob = new Blob([completeXML], { type: 'application/xml' })
     const url = URL.createObjectURL(blob)
     window.open(url, '_blank')
     URL.revokeObjectURL(url)
