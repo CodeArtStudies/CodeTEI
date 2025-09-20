@@ -4,11 +4,11 @@ import { z } from 'zod'
 
 const createExecutionSchema = z.object({
   type: z.enum(['container', 'blockchain', 'local']),
-  containerInfo: z.string().optional(),
-  chainName: z.string().optional(),
-  txId: z.string().optional(),
+  containerInfo: z.string().optional().nullable(),
+  chainName: z.string().optional().nullable(),
+  txId: z.string().optional().nullable(),
   status: z.enum(['success', 'failed', 'pending']),
-  notes: z.string().optional(),
+  notes: z.string().optional().nullable(),
   executedAt: z.string().datetime().optional(),
   codeWorkId: z.string(),
 })

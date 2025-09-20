@@ -198,10 +198,10 @@ export default function WorkDetailPage({ params }: { params: Promise<{ hash: str
         body: JSON.stringify({
           type: executionForm.type,
           status: executionForm.status,
-          containerInfo: executionForm.containerInfo || null,
-          chainName: executionForm.chainName || null,
-          txId: executionForm.txId || null,
-          notes: executionForm.notes || null,
+          containerInfo: executionForm.containerInfo || undefined,
+          chainName: executionForm.chainName || undefined,
+          txId: executionForm.txId || undefined,
+          notes: executionForm.notes || undefined,
           codeWorkId: work.id,
         }),
       })
