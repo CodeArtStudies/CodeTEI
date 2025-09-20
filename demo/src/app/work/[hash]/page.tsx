@@ -53,6 +53,15 @@ export default function WorkDetailPage({ params }: { params: Promise<{ hash: str
     message?: string
   } | null>(null)
   const [userExplanation, setUserExplanation] = useState('')
+  const [showExecutionForm, setShowExecutionForm] = useState(false)
+  const [executionForm, setExecutionForm] = useState({
+    type: 'container',
+    status: 'success',
+    containerInfo: '',
+    chainName: '',
+    txId: '',
+    notes: ''
+  })
 
   useEffect(() => {
     const loadWork = async () => {
@@ -176,6 +185,45 @@ export default function WorkDetailPage({ params }: { params: Promise<{ hash: str
     } catch (error) {
       console.error('Error deleting explanation:', error)
       alert('Failed to delete explanation. Please try again.')
+    }
+  }
+
+  const addExecution = async () => {
+    if (!work) return
+
+    try {
+      const response = await fetch('/api/executions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: executionForm.type,
+          status: executionForm.status,
+          containerInfo: executionForm.containerInfo || null,
+          chainName: executionForm.chainName || null,
+          txId: executionForm.txId || null,
+          notes: executionForm.notes || null,
+          codeWorkId: work.id,
+        }),
+      })
+
+      if (response.ok) {
+        setShowExecutionForm(false)
+        setExecutionForm({
+          type: 'container',
+          status: 'success',
+          containerInfo: '',
+          chainName: '',
+          txId: '',
+          notes: ''
+        })
+        const resolvedParams = await params
+        await fetchWork(resolvedParams.hash) // Refresh to show updated executions
+      } else {
+        throw new Error('Failed to add execution')
+      }
+    } catch (error) {
+      console.error('Error adding execution:', error)
+      alert('Failed to add execution. Please try again.')
     }
   }
 
@@ -511,7 +559,105 @@ export default function WorkDetailPage({ params }: { params: Promise<{ hash: str
             <div>
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-lg font-bold text-black">Execution Records</h3>
+                <button
+                  onClick={() => setShowExecutionForm(true)}
+                  className="bg-gray-800 text-white px-3 py-1 rounded text-sm hover:bg-gray-900"
+                >
+                  Add Execution
+                </button>
               </div>
+
+              {showExecutionForm && (
+                <div className="border border-gray-300 rounded p-4 mb-4 bg-white">
+                  <h4 className="text-md font-medium text-gray-900 mb-3">Add New Execution Record</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                      <select
+                        value={executionForm.type}
+                        onChange={(e) => setExecutionForm({...executionForm, type: e.target.value})}
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                      >
+                        <option value="container">Container</option>
+                        <option value="blockchain">Blockchain</option>
+                        <option value="local">Local</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                      <select
+                        value={executionForm.status}
+                        onChange={(e) => setExecutionForm({...executionForm, status: e.target.value})}
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                      >
+                        <option value="success">Success</option>
+                        <option value="failed">Failed</option>
+                        <option value="pending">Pending</option>
+                      </select>
+                    </div>
+                    {executionForm.type === 'container' && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Container Info</label>
+                        <input
+                          type="text"
+                          value={executionForm.containerInfo}
+                          onChange={(e) => setExecutionForm({...executionForm, containerInfo: e.target.value})}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                          placeholder="e.g., docker run python:3.9"
+                        />
+                      </div>
+                    )}
+                    {executionForm.type === 'blockchain' && (
+                      <>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Chain Name</label>
+                          <input
+                            type="text"
+                            value={executionForm.chainName}
+                            onChange={(e) => setExecutionForm({...executionForm, chainName: e.target.value})}
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                            placeholder="e.g., Ethereum Mainnet"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Transaction ID</label>
+                          <input
+                            type="text"
+                            value={executionForm.txId}
+                            onChange={(e) => setExecutionForm({...executionForm, txId: e.target.value})}
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                            placeholder="0x..."
+                          />
+                        </div>
+                      </>
+                    )}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                      <textarea
+                        value={executionForm.notes}
+                        onChange={(e) => setExecutionForm({...executionForm, notes: e.target.value})}
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                        rows={3}
+                        placeholder="Execution details, results, etc."
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={addExecution}
+                        className="bg-gray-800 text-white px-4 py-2 rounded text-sm hover:bg-gray-900"
+                      >
+                        Add Execution
+                      </button>
+                      <button
+                        onClick={() => setShowExecutionForm(false)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded text-sm hover:bg-gray-600"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-3">
                 {work.executions.map((execution) => (

@@ -3,11 +3,11 @@ import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
 const createExecutionSchema = z.object({
-  type: z.enum(['container', 'blockchain']),
+  type: z.enum(['container', 'blockchain', 'local']),
   containerInfo: z.string().optional(),
   chainName: z.string().optional(),
   txId: z.string().optional(),
-  status: z.enum(['success', 'failure']),
+  status: z.enum(['success', 'failed', 'pending']),
   notes: z.string().optional(),
   executedAt: z.string().datetime().optional(),
   codeWorkId: z.string(),
